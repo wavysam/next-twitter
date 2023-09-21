@@ -1,7 +1,11 @@
+import { Inter } from "next/font/google";
 import "../globals.css";
 
+import SideBar from "@/components/layout/Sidebar";
 import QueryProvider from "@/components/providers/QueryProvider";
 import ToastProvider from "@/components/providers/ToastProvider";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Next.js",
@@ -15,9 +19,25 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className={inter.className}>
         <ToastProvider />
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <div className="h-screen">
+            <div className="max-w-7xl mx-auto relative">
+              <div className="flex flex-row">
+                <div className="fixed top-0 md:container">
+                  <div className="hidden sm:basis-1/12 sm:flex md:basis-1/4">
+                    <SideBar />
+                  </div>
+                </div>
+                <div className="sm:ml-[8.33%]  md:ml-[25%] basis-full lg:basis-1/2 border-x min-h-screen">
+                  {children}
+                </div>
+                <div className="hidden lg:flex lg:basis-1/4">Right Sidebar</div>
+              </div>
+            </div>
+          </div>
+        </QueryProvider>
       </body>
     </html>
   );
