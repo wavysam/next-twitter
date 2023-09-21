@@ -1,8 +1,17 @@
 import Image from "next/image";
+import { redirect } from "next/navigation";
+
 import RegisterModal from "./_components/register-modal";
 import LoginModal from "./_components/login-modal";
+import { getAuthSession } from "@/lib/auth";
 
-export default function Home() {
+export default async function Page() {
+  const session = await getAuthSession();
+
+  if (session?.user) {
+    return redirect("/home");
+  }
+
   return (
     <main className="h-full w-full">
       <div className="max-w-7xl mx-auto">

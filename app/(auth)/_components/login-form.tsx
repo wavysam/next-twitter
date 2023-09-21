@@ -2,6 +2,9 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { signIn } from "next-auth/react";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 import {
   Form,
@@ -12,14 +15,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import useRegisterModal from "@/hooks/useRegisterModal";
 import {
   LoginValidatorSchema,
   LoginValidatorType,
 } from "@/lib/validator/loginValidator";
+import useLoginModal from "@/hooks/useLoginModal";
 
 const LoginForm = () => {
-  const registerModal = useRegisterModal();
+  const loginModal = useLoginModal();
+  const router = useRouter();
 
   const form = useForm<LoginValidatorType>({
     resolver: zodResolver(LoginValidatorSchema),
@@ -35,9 +39,19 @@ const LoginForm = () => {
   } = form;
 
   const onSubmit = async (values: LoginValidatorType) => {
-    console.log(values);
+    const res = await signIn("credentials", {
+      email: values.email,
+      password: values.password,
+      redirect: false,
+    });
 
-    // Todo: Login User
+    if (res?.ok && !res.error) {
+      loginModal.onClose();
+      toast.success("Success");
+      router.push("/home");
+    } else {
+      toast.error("Login failed.");
+    }
   };
 
   return (
