@@ -36,7 +36,7 @@ const ProfileInfo = ({
       <div className="flex flex-col mt-4">
         <div className="flex items-center space-x-1">
           <CalendarDays className="h-4 w-4 text-neutral-600" />
-          <p className="text-neutral-600">Joined {formmatedDate}</p>
+          <p className="text-neutral-600 text-sm">Joined {formmatedDate}</p>
         </div>
       </div>
 
