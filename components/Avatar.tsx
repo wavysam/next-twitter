@@ -12,8 +12,8 @@ const Avatar = ({ src, isLarge, isBordered }: AvatarProps) => {
     <div
       className={cn(
         "relative rounded-full",
-        isLarge ? "h-36" : "h-12",
-        isLarge ? "w-36" : "w-12",
+        isLarge ? "h-36" : "h-11",
+        isLarge ? "w-36" : "w-11",
         isBordered ? "border-4" : "border-0",
         isBordered ? "border-white" : "border-none"
       )}
