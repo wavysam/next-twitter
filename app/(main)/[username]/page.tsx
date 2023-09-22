@@ -8,7 +8,6 @@ import EditProfileModal from "./_components/EditProfileModal";
 import ProfileInfo from "./_components/ProfileInfo";
 import FollowButton from "./_components/FollowButton";
 import { getAuthSession } from "@/lib/auth";
-
 type PageProps = {
   params: {
     username: string;
