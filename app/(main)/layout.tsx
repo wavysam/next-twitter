@@ -25,7 +25,7 @@ export default function RootLayout({
           <div className="h-screen">
             <div className="max-w-7xl mx-auto relative">
               <div className="flex flex-row">
-                <div className="fixed top-0 md:container">
+                <div className="fixed top-0">
                   <div className="hidden sm:basis-1/12 sm:flex md:basis-1/4">
                     <SideBar />
                   </div>
