@@ -42,7 +42,7 @@ const Page = async ({ params }: PageProps) => {
           )}
 
           <div className="absolute -bottom-16 left-4">
-            <Avatar src={paramsUser?.profileImage!} isLarge />
+            <Avatar src={paramsUser?.profileImage!} isLarge isBordered />
           </div>
         </div>
 
