@@ -17,8 +17,8 @@ const Header = ({ label, postCount, showBackArrow }: HeaderProps) => {
   };
 
   return (
-    <div className="sticky top-0 bg-white z-10">
-      <div className="h-14 flex items-center border-b">
+    <div className="sticky top-0 bg-white/80 backdrop-blur-3xl z-10">
+      <div className="h-14 flex items-center">
         <div className="flex justify-between items-center gap-10 px-5">
           {showBackArrow && (
             <div
@@ -33,7 +33,9 @@ const Header = ({ label, postCount, showBackArrow }: HeaderProps) => {
             {postCount && (
               <div className="text-xs text-neutral-600 font-medium">
                 <span>{postCount}</span>
-                <span className="ml-1">posts</span>
+                <span className="ml-1">
+                  {postCount.length > 1 ? "posts" : "post"}
+                </span>
               </div>
             )}
           </div>

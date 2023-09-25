@@ -9,3 +9,6 @@ export const isBase64Image = (value: string): boolean => {
   const regex = /^data:image\/\w+;base64,/;
   return regex.test(value);
 };
+
+export const delay = async (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));

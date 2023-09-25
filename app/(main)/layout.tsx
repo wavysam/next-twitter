@@ -1,11 +1,11 @@
-import { Inter } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "../globals.css";
 
 import SideBar from "@/components/layout/Sidebar";
 import QueryProvider from "@/components/providers/QueryProvider";
 import ToastProvider from "@/components/providers/ToastProvider";
 
-const inter = Inter({ subsets: ["latin"] });
+const poppins = Poppins({ weight: "400", subsets: ["latin"] });
 
 export const metadata = {
   title: "Next.js",
@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={poppins.className}>
         <ToastProvider />
         <QueryProvider>
           <div className="h-screen">

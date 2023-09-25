@@ -6,13 +6,17 @@ const SideBar = async () => {
   const session = await getAuthSession();
 
   return (
-    <aside className="h-full md:pr-4">
-      <div className="flex flex-col items-end">
+    <aside className="relative h-full md:ml-12">
+      <div className="flex flex-col items-start">
         <div className="space-y-2">
           <div className="flex justify-start">
             <SidebarLogo />
           </div>
-          <SidebarItem sessionUsername={session?.user.username} />
+          <SidebarItem
+            sessionUsername={session?.user.username}
+            sessionName={session?.user.name}
+            sessionImage={session?.user.image}
+          />
         </div>
       </div>
     </aside>

@@ -11,7 +11,7 @@ type ImagesPreviewProps = {
   stateAction: Dispatch<SetStateAction<string[]>>;
 };
 
-const ImagesPreview = ({ data, stateAction }: ImagesPreviewProps) => {
+const ImagePreview = ({ data, stateAction }: ImagesPreviewProps) => {
   const onRemove = (index: number) => {
     stateAction(data.filter((_, idx) => idx !== index));
   };
@@ -44,4 +44,4 @@ const ImagesPreview = ({ data, stateAction }: ImagesPreviewProps) => {
   );
 };
 
-export default ImagesPreview;
+export default ImagePreview;

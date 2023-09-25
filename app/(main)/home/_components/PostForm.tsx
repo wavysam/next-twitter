@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import ImagesPreview from "./ImagesPreview";
+import ImagePreview from "@/components/ImagePreview";
 import { useUploadThing } from "@/lib/uploadthing";
 import { cn } from "@/lib/utils";
 
@@ -106,8 +106,6 @@ const PostForm = () => {
   });
 
   const onSubmit = async (values: CreatePostValidatorType) => {
-    console.log(values);
-
     let imagesUrl: string[] = [];
 
     if (images && images.length > 0) {
@@ -146,10 +144,7 @@ const PostForm = () => {
           />
 
           {imagesPreview && (
-            <ImagesPreview
-              data={imagesPreview}
-              stateAction={setImagesPreview}
-            />
+            <ImagePreview data={imagesPreview} stateAction={setImagesPreview} />
           )}
 
           <hr className="border-t border-neutral-200/70" />
@@ -165,6 +160,7 @@ const PostForm = () => {
                 type="file"
                 id="images"
                 multiple
+                disabled={isLoading || isSubmitting}
                 className="hidden"
                 onChange={handleImageChange}
               />

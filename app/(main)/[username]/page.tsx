@@ -8,6 +8,8 @@ import EditProfileModal from "./_components/EditProfileModal";
 import ProfileInfo from "./_components/ProfileInfo";
 import FollowButton from "./_components/FollowButton";
 import { getAuthSession } from "@/lib/auth";
+import PostFeed from "@/components/posts/PostFeed";
+import { Suspense } from "react";
 type PageProps = {
   params: {
     username: string;
@@ -27,9 +29,26 @@ const Page = async ({ params }: PageProps) => {
     },
   });
 
+  const userPosts = await prisma.post.findMany({
+    where: {
+      creatorId: paramsUser?.id,
+    },
+    include: {
+      creator: true,
+      comments: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
   return (
     <div>
-      <Header label={paramsUser?.name!} showBackArrow postCount={"0"} />
+      <Header
+        label={paramsUser?.name!}
+        showBackArrow
+        postCount={userPosts.length.toString()}
+      />
       <div className="relative">
         <div className="h-52 bg-neutral-200 relative">
           {paramsUser?.coverImage && (
@@ -67,6 +86,10 @@ const Page = async ({ params }: PageProps) => {
             </div>
           </div>
         </div>
+
+        <Suspense fallback={<p>Loading...</p>}>
+          <PostFeed data={userPosts} />
+        </Suspense>
       </div>
     </div>
   );
