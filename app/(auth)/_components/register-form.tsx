@@ -8,6 +8,10 @@ import axios, { AxiosError } from "axios";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
+import { experimental_useFormStatus as useFormStatus } from "react-dom";
+
+import registerUser from "@/actions/user/registerUser";
+
 import {
   Form,
   FormField,
@@ -88,6 +92,8 @@ const RegisterForm = () => {
     registerUser(values);
   };
 
+  const { pending } = useFormStatus();
+
   return (
     <Form {...form}>
       <form
@@ -160,7 +166,7 @@ const RegisterForm = () => {
           <Button
             size="lg"
             className="w-full rounded-full mt-8 mb-3"
-            disabled={isLoading}
+            disabled={isLoading || pending}
           >
             Register
           </Button>
