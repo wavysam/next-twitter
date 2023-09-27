@@ -7,19 +7,32 @@ import {
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./ui/alert-dialog";
-import { Button } from "./ui/button";
+} from "../ui/alert-dialog";
+import { Button } from "../ui/button";
+import { deleteComment } from "@/actions/comments/deleteComment";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 
-type AlertModalProps = {
-  onConfirm: () => void;
-  disabled?: boolean;
+type DeleteModalProps = {
+  commentId: string;
 };
 
-const AlertModal = ({ onConfirm, disabled }: AlertModalProps) => {
+const DeleteCommentModal = ({ commentId }: DeleteModalProps) => {
+  const [loading, setLoading] = useState(false);
+  const pathname = usePathname();
+
+  const onDeleteComment = async () => {
+    setLoading(true);
+    try {
+      await deleteComment({ commentId, path: pathname });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -30,7 +43,7 @@ const AlertModal = ({ onConfirm, disabled }: AlertModalProps) => {
       <AlertDialogContent className="p-8 max-w-md">
         <AlertDialogHeader>
           <AlertDialogTitle className="font-semibold">
-            Delete post?
+            Delete comment?
           </AlertDialogTitle>
           <AlertDialogDescription className="text-base">
             This can&apos;t be undone and it will be removed from your profile,
@@ -41,10 +54,10 @@ const AlertModal = ({ onConfirm, disabled }: AlertModalProps) => {
           <Button
             variant="destructive"
             className="w-full rounded-full"
-            disabled={disabled}
-            onClick={onConfirm}
+            disabled={loading}
+            onClick={onDeleteComment}
           >
-            {disabled ? <Loader2 className="h-5 w-5 animate-spin" /> : "Delete"}
+            {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Delete"}
           </Button>
           <AlertDialogCancel className="w-full rounded-full">
             Cancel
@@ -55,4 +68,4 @@ const AlertModal = ({ onConfirm, disabled }: AlertModalProps) => {
   );
 };
 
-export default AlertModal;
+export default DeleteCommentModal;

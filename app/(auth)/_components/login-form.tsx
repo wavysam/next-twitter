@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 import {
   Form,
@@ -100,7 +101,11 @@ const LoginForm = () => {
             className="w-full rounded-full mt-8 mb-3"
             disabled={isSubmitting}
           >
-            Login
+            {isSubmitting ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              "Login"
+            )}
           </Button>
         </div>
       </form>

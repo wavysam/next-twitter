@@ -1,14 +1,15 @@
-import Avatar from "@/components/Avatar";
-import Header from "@/components/Header";
-import prisma from "@/lib/prisma";
-import { cn } from "@/lib/utils";
-import Image from "next/image";
 import dayjs from "dayjs";
-import CommentForm from "@/components/CommentForm";
+import Image from "next/image";
+import prisma from "@/lib/prisma";
+
+import { cn } from "@/lib/utils";
+import Header from "@/components/Header";
+import Avatar from "@/components/Avatar";
 import { getAuthSession } from "@/lib/auth";
 import ClientOnly from "@/components/ClientOnly";
+import CommentForm from "@/components/CommentForm";
 import CommentFeed from "@/components/comments/CommentFeed";
-import Action from "@/components/Actions";
+import PostActions from "@/components/posts/PostActions";
 
 type PageProps = {
   params: {
@@ -96,6 +97,10 @@ const Page = async ({ params }: PageProps) => {
               <p className="text-neutral-500 text-[15px] font-medium">
                 {createdAt}
               </p>
+            </div>
+
+            <div className="border-b py-2">
+              <PostActions data={post} sessionId={session?.user.id as string} />
             </div>
 
             <ClientOnly>

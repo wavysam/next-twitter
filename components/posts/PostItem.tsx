@@ -4,15 +4,16 @@ import { Comment, Post, User } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { format } from "date-fns";
-import Link from "next/link";
+import { Session } from "next-auth";
 
 import Avatar from "../Avatar";
 import FeedImages from "../FeedImages";
 import AlertModal from "../AlertModal";
 import PostActions from "./PostActions";
-import { Session } from "next-auth";
+import deletePost from "@/actions/posts/deletePost";
+import { useState } from "react";
 
 type PostItemProps = {
   post: Post & {
@@ -23,54 +24,41 @@ type PostItemProps = {
 };
 
 const PostItem = ({ post, session }: PostItemProps) => {
-  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const pathname = usePathname();
 
-  const {
-    mutate: deletePost,
-    isLoading,
-    isSuccess,
-  } = useMutation({
-    mutationFn: async () => {
-      const { data } = await axios.delete(`/api/post/${post.id}`);
-      return data;
-    },
-    onError: () => {},
-    onSuccess: () => {
-      router.refresh();
-      toast.success("Post deleted");
-    },
-  });
+  const onDeletePost = async () => {
+    setIsLoading(true);
+    try {
+      await deletePost({
+        postId: post.id,
+        path: pathname,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="border-b hover:bg-neutral-100 cursor-pointer transition">
       <div className="flex items-start space-x-3 p-6">
-        <Link href={`/${post.creator.username}`}>
-          <Avatar src={post.creator.profileImage as string} />
-        </Link>
+        <Avatar src={post.creator.profileImage as string} />
         <div className="flex-1">
           <div className="flex justify-between items-center">
             <div className="flex flex-row items-center space-x-2">
-              <Link
-                href={`/${post.creator.username}`}
-                className="flex space-x-3"
-              >
-                <p className="font-semibold hover:underline">
-                  {post.creator.name}
-                </p>
-                <p className="text-neutral-600 hover:underline">
-                  @{post.creator.username}
-                </p>
-              </Link>
+              <p className="font-semibold hover:underline">
+                {post.creator.name}
+              </p>
+              <p className="text-neutral-600 hover:underline">
+                @{post.creator.username}
+              </p>
+
               <p className="text-neutral-600">
                 {format(post.createdAt, "MM/dd/YYY")}
               </p>
             </div>
             {post.creatorId === session?.user.id && (
-              <AlertModal
-                onConfirm={deletePost}
-                disabled={isLoading}
-                isSuccess={isSuccess}
-              />
+              <AlertModal onConfirm={onDeletePost} disabled={isLoading} />
             )}
           </div>
           <div className="mt-2">

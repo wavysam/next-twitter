@@ -54,7 +54,6 @@ const EditProfileModal = ({ initialData }: EditProfileModalProps) => {
           </div>
           <div>
             <EditProfileForm
-              userId={initialData?.id}
               name={initialData?.name}
               bio={initialData?.bio}
               coverImage={initialData?.coverImage}

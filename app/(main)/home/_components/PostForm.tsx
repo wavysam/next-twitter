@@ -5,10 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import TextareaAutosize from "react-textarea-autosize";
 import { Image as ImageIcon, Loader2 } from "lucide-react";
-import axios, { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-hot-toast";
+import { usePathname } from "next/navigation";
 
 import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
 import {
@@ -21,13 +18,14 @@ import { Label } from "@/components/ui/label";
 import ImagePreview from "@/components/ImagePreview";
 import { useUploadThing } from "@/lib/uploadthing";
 import { cn } from "@/lib/utils";
+import createPost from "@/actions/posts/createPost";
 
 const PostForm = () => {
   const [images, setImages] = useState<File[]>([]);
   const [imagesPreview, setImagesPreview] = useState<string[]>([]);
 
   const { startUpload } = useUploadThing("imageUploader");
-  const router = useRouter();
+  const pathname = usePathname();
 
   const form = useForm<CreatePostValidatorType>({
     resolver: zodResolver(CreatePostValidatorSchema),
@@ -71,40 +69,6 @@ const PostForm = () => {
     }
   };
 
-  const { mutate: createPost, isLoading } = useMutation({
-    mutationFn: async ({
-      body,
-      images,
-    }: {
-      body: string;
-      images: string[];
-    }) => {
-      const payload = {
-        body,
-        images,
-      };
-      const { data } = await axios.post("/api/post", payload);
-      return data;
-    },
-    onError: (error) => {
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 401) {
-          return toast.error(error.response.data);
-        }
-        if (error.response?.status === 409) {
-          return toast.error(error.response.data);
-        }
-      }
-      return toast.error("Something went wrong");
-    },
-    onSuccess: () => {
-      router.refresh();
-      toast.success("Post created");
-      setImagesPreview([]);
-      reset();
-    },
-  });
-
   const onSubmit = async (values: CreatePostValidatorType) => {
     let imagesUrl: string[] = [];
 
@@ -115,11 +79,15 @@ const PostForm = () => {
         imagesUploadResponse.map((item) => imagesUrl.push(item.url));
       }
     }
-
-    createPost({
+    await createPost({
       body: values.body,
       images: imagesUrl,
+      path: pathname,
     });
+
+    reset();
+    setImagesPreview([]);
+    setImages([]);
   };
 
   return (
@@ -160,7 +128,7 @@ const PostForm = () => {
                 type="file"
                 id="images"
                 multiple
-                disabled={isLoading || isSubmitting}
+                disabled={isSubmitting}
                 className="hidden"
                 onChange={handleImageChange}
               />
@@ -182,9 +150,9 @@ const PostForm = () => {
               <Button
                 size="sm"
                 className="rounded-full w-[100px]"
-                disabled={isSubmitting || isLoading || !isValid}
+                disabled={isSubmitting || !isValid}
               >
-                {isSubmitting || isLoading ? (
+                {isSubmitting ? (
                   <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
                   "Post"

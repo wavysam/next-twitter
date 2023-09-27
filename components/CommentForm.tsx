@@ -25,10 +25,9 @@ import { useUploadThing } from "@/lib/uploadthing";
 
 type CommentFormProps = {
   postId: string;
-  stateAction: Dispatch<SetStateAction<boolean>>;
 };
 
-const CommentForm = ({ postId, stateAction }: CommentFormProps) => {
+const CommentForm = ({ postId }: CommentFormProps) => {
   const [isFocused, setIsFocused] = useState(false);
   const [images, setImages] = useState<File[]>([]);
   const [imagesPreview, setImagesPreview] = useState<string[]>([]);
@@ -114,7 +113,6 @@ const CommentForm = ({ postId, stateAction }: CommentFormProps) => {
       reset();
       setImagesPreview([]);
       setImages([]);
-      stateAction(false);
     },
   });
 

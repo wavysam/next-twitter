@@ -26,6 +26,7 @@ model User {
 
   posts    Post[]
   comments Comment[]
+  replies  Reply[]
 }
 
 model Post {
@@ -40,6 +41,7 @@ model Post {
   creator   User   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
 
   comments Comment[]
+  replies  Reply[]
 }
 
 model Comment {
@@ -54,4 +56,22 @@ model Comment {
   post      Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
   creatorId String @db.ObjectId
   creator   User   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+  replies Reply[]
+}
+
+model Reply {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  body       String
+  images     String[]
+  likes      String[]
+  createdAt  DateTime @default(now())
+  updatedtAt DateTime @updatedAt
+
+  commentId String  @db.ObjectId
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  postId    String  @db.ObjectId
+  post      Post    @relation(fields: [postId], references: [id])
+  creatorId String  @db.ObjectId
+  creator   User    @relation(fields: [creatorId], references: [id])
 }

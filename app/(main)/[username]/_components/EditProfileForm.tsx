@@ -3,10 +3,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
-import { toast } from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import {
   Form,
@@ -28,9 +25,9 @@ import { Camera, Loader2 } from "lucide-react";
 import { isBase64Image } from "@/lib/utils";
 import { useUploadThing } from "@/lib/uploadthing";
 import useEditProfileModal from "@/hooks/useEditProfileModal";
+import { updateProfile } from "@/actions/user/editProfile";
 
 type EditProfileFormProps = {
-  userId: string | undefined;
   name: string | undefined;
   bio: string | null | undefined;
   coverImage: string | null | undefined;
@@ -38,7 +35,6 @@ type EditProfileFormProps = {
 };
 
 const EditProfileForm = ({
-  userId,
   name,
   bio,
   coverImage,
@@ -49,7 +45,7 @@ const EditProfileForm = ({
 
   const { startUpload } = useUploadThing("imageUploader");
   const editProfileModal = useEditProfileModal();
-  const router = useRouter();
+  const pathname = usePathname();
 
   const form = useForm<EditProfileValidatorType>({
     resolver: zodResolver(EditProfileValidatorSchema),
@@ -109,44 +105,6 @@ const EditProfileForm = ({
     }
   };
 
-  const { mutate: updateProfile, isLoading } = useMutation({
-    mutationFn: async ({
-      name,
-      bio,
-      coverImage,
-      profileImage,
-    }: EditProfileValidatorType) => {
-      const payload = {
-        name,
-        bio,
-        coverImage,
-        profileImage,
-      };
-      const { data } = await axios.put(`/api/user?userId=${userId}`, payload);
-      return data;
-    },
-    onError: (error) => {
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 401) {
-          return toast.error(error.response.data);
-        }
-        if (error.response?.status === 404) {
-          return toast.error(error.response.data);
-        }
-        if (error.response?.status === 409) {
-          return toast.error(error.response.data);
-        }
-      }
-
-      return toast.error("Something went wrong");
-    },
-    onSuccess: () => {
-      toast.success("Profile updated");
-      router.refresh();
-      editProfileModal.onClose();
-    },
-  });
-
   const onSubmit = async (values: EditProfileValidatorType) => {
     const coverImageBlob = values.coverImage as string;
     const profileImageBlob = values.profileImage as string;
@@ -170,7 +128,15 @@ const EditProfileForm = ({
       }
     }
 
-    updateProfile(values);
+    await updateProfile({
+      name: values.name,
+      bio: values.bio,
+      coverImage: values.coverImage,
+      profileImage: values.profileImage,
+      path: pathname,
+    });
+
+    editProfileModal.onClose();
   };
 
   return (
@@ -200,7 +166,7 @@ const EditProfileForm = ({
                     <Input
                       type="file"
                       id="coverImage"
-                      disabled={isSubmitting || isLoading}
+                      disabled={isSubmitting}
                       className="hidden"
                       onChange={(e) =>
                         handleCoverImageChange(e, field.onChange)
@@ -236,7 +202,7 @@ const EditProfileForm = ({
                     <Input
                       type="file"
                       id="profileImage"
-                      disabled={isSubmitting || isLoading}
+                      disabled={isSubmitting}
                       className="hidden"
                       onChange={(e) =>
                         handleProfileImageChange(e, field.onChange)
@@ -257,7 +223,7 @@ const EditProfileForm = ({
             <FormItem className="mb-4">
               <Label>Name</Label>
               <FormControl>
-                <Input {...field} disabled={isSubmitting || isLoading} />
+                <Input {...field} disabled={isSubmitting} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -270,19 +236,16 @@ const EditProfileForm = ({
             <FormItem className="mb-4">
               <Label>Bio</Label>
               <FormControl>
-                <Textarea {...field} disabled={isSubmitting || isLoading} />
+                <Textarea {...field} disabled={isSubmitting} />
               </FormControl>
             </FormItem>
           )}
         />
 
         <div className="flex justify-end">
-          <Button
-            className="rounded-full w-[125px]"
-            disabled={isSubmitting || isLoading}
-          >
-            {isSubmitting || isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+          <Button className="rounded-full w-[125px]" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
             ) : (
               "Save"
             )}
