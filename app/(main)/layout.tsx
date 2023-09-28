@@ -6,8 +6,12 @@ import QueryProvider from "@/components/providers/QueryProvider";
 import ToastProvider from "@/components/providers/ToastProvider";
 import { getAuthSession } from "@/lib/auth";
 import { Session } from "next-auth";
+import Rightbar from "@/components/Rightbar";
 
-const poppins = Poppins({ weight: "400", subsets: ["latin"] });
+const poppins = Poppins({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+});
 
 export const metadata = {
   title: "Next.js",
@@ -27,17 +31,19 @@ export default async function RootLayout({
         <ToastProvider />
         <QueryProvider>
           <div className="h-screen">
-            <div className="max-w-7xl mx-auto relative">
+            <div className="max-w-7xl mx-auto">
               <div className="flex flex-row">
                 <div className="fixed top-0">
-                  <div className="hidden sm:basis-1/12 sm:flex md:basis-1/4">
+                  <div className="hidden sm:basis-1/12 sm:flex md:basis-[22%]">
                     <SideBar session={session} />
                   </div>
                 </div>
-                <div className="sm:ml-[8.33%]  md:ml-[25%] basis-full lg:basis-1/2 border-x min-h-screen">
+                <div className="sm:ml-[8.33%]  md:ml-[22%] basis-full lg:basis-1/2 border-x min-h-screen">
                   {children}
                 </div>
-                <div className="hidden lg:flex lg:basis-1/4">Right Sidebar</div>
+                <div className="hidden lg:flex lg:basis-[33%]">
+                  <Rightbar />
+                </div>
               </div>
             </div>
           </div>

@@ -1,9 +1,9 @@
-import { Post } from "@prisma/client";
+import { ExtendedPost } from "@/lib/types";
 import PostItem from "./PostItem";
 import { getAuthSession } from "@/lib/auth";
 
 type PostFeedProps = {
-  data: Post[];
+  data: ExtendedPost[];
 };
 
 const PostFeed = async ({ data }: PostFeedProps) => {

@@ -29,7 +29,7 @@ const Page = async () => {
       <Header label="Home" />
       <div className="border-b">
         <div className="flex items-start p-3 space-x-3">
-          <Avatar src={session.user.image!} />
+          <Avatar src={session?.user.image!} />
           <div className="flex-1">
             <PostForm />
           </div>

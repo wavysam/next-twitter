@@ -48,7 +48,7 @@ const PostForm = () => {
     if (e.target.files && e.target.files.length > 0) {
       const files = e.target.files;
       const fileArray = Array.from(files);
-      setImages(fileArray);
+      setImages(Array.from(e.target.files));
 
       for (let i = 0; i <= fileArray.length; i++) {
         const fileReader = new FileReader();
@@ -72,7 +72,8 @@ const PostForm = () => {
   const onSubmit = async (values: CreatePostValidatorType) => {
     let imagesUrl: string[] = [];
 
-    if (images && images.length > 0) {
+    // check if image preview has value
+    if (imagesPreview && imagesPreview.length > 0) {
       const imagesUploadResponse = await startUpload(images);
 
       if (imagesUploadResponse && imagesUploadResponse.length > 0) {

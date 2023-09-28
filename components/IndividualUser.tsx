@@ -1,28 +1,29 @@
 "use client";
 
 import { useState } from "react";
-import { usePathname } from "next/navigation";
-import { User } from "@prisma/client";
+import Link from "next/link";
 import { Loader2 } from "lucide-react";
+import { User } from "@prisma/client";
+import { usePathname } from "next/navigation";
 
+import Avatar from "./Avatar";
+import { Button } from "./ui/button";
 import { follow, unfollow } from "@/actions/user/follow";
-import { Button } from "@/components/ui/button";
 
-type FollowButtonProps = {
-  userId: string;
-  data: User | null;
+type IndividualUserProps = {
+  data: User;
   sessionId: string;
 };
 
-const FollowButton = ({ userId, data, sessionId }: FollowButtonProps) => {
+const IndividualUser = ({ data, sessionId }: IndividualUserProps) => {
   const [loading, setLoading] = useState(false);
   const pathname = usePathname();
-  const hasFollow = !!data?.followers.find((id) => id === sessionId);
+  const hasFollow = !!data.followers.find((id) => id === sessionId);
 
   const handleFollow = async () => {
     setLoading(true);
     try {
-      await follow(userId, pathname);
+      await follow(data.id, pathname);
     } finally {
       setLoading(false);
     }
@@ -30,7 +31,7 @@ const FollowButton = ({ userId, data, sessionId }: FollowButtonProps) => {
   const handleUnfollow = async () => {
     setLoading(true);
     try {
-      await unfollow(userId, pathname);
+      await unfollow(data.id, pathname);
     } finally {
       setLoading(false);
     }
@@ -38,8 +39,21 @@ const FollowButton = ({ userId, data, sessionId }: FollowButtonProps) => {
   const toggleFollow = async () => {
     hasFollow ? handleUnfollow() : handleFollow();
   };
+
   return (
-    <div>
+    <div className="flex justify-between items-center w-full">
+      <div className="flex items-start gap-3">
+        <Avatar src={data.profileImage!} />
+        <div className="flex flex-col">
+          <Link
+            href={`/${data.username}`}
+            className="hover:underline font-semibold"
+          >
+            {data.name}
+          </Link>
+          <p className="text-sm text-neutral-600">@{data.username}</p>
+        </div>
+      </div>
       <Button
         size="sm"
         variant={hasFollow ? "outline" : "default"}
@@ -59,4 +73,4 @@ const FollowButton = ({ userId, data, sessionId }: FollowButtonProps) => {
   );
 };
 
-export default FollowButton;
+export default IndividualUser;

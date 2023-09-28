@@ -8,10 +8,12 @@ import { Post, User } from "@prisma/client";
 import { likePost, unlikePost } from "@/actions/posts/like";
 
 type PostActionsProps = {
-  data: Post & {
-    creator: User;
-    comments: Comment[];
-  };
+  data:
+    | (Post & {
+        creator: User;
+        comments: Comment[];
+      })
+    | any;
   sessionImage: string;
   sessionId: string;
 };
@@ -19,7 +21,7 @@ type PostActionsProps = {
 const PostActions = ({ data, sessionImage, sessionId }: PostActionsProps) => {
   const pathname = usePathname();
 
-  const hasLiked = !!data.likes.find((id) => id === sessionId);
+  const hasLiked = !!data.likes.find((id: string) => id === sessionId);
 
   const toggleLike = async () => {
     if (hasLiked) {

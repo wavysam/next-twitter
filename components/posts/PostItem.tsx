@@ -1,25 +1,20 @@
 "use client";
 
-import { Comment, Post, User } from "@prisma/client";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import toast from "react-hot-toast";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { format } from "date-fns";
 import { Session } from "next-auth";
+import { useState } from "react";
+import Link from "next/link";
 
 import Avatar from "../Avatar";
 import FeedImages from "../FeedImages";
 import AlertModal from "../AlertModal";
 import PostActions from "./PostActions";
 import deletePost from "@/actions/posts/deletePost";
-import { useState } from "react";
+import { ExtendedPost } from "@/lib/types";
 
 type PostItemProps = {
-  post: Post & {
-    creator: User;
-    comments: Comment[];
-  };
+  post: ExtendedPost;
   session: Session | null;
 };
 
@@ -46,12 +41,18 @@ const PostItem = ({ post, session }: PostItemProps) => {
         <div className="flex-1">
           <div className="flex justify-between items-center">
             <div className="flex flex-row items-center space-x-2">
-              <p className="font-semibold hover:underline">
+              <Link
+                href={`/${post.creator.username}`}
+                className="font-semibold hover:underline"
+              >
                 {post.creator.name}
-              </p>
-              <p className="text-neutral-600 hover:underline">
+              </Link>
+              <Link
+                href={`/${post.creator.username}`}
+                className="text-neutral-600 hover:underline"
+              >
                 @{post.creator.username}
-              </p>
+              </Link>
 
               <p className="text-neutral-600">
                 {format(post.createdAt, "MM/dd/YYY")}

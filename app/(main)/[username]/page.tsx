@@ -71,7 +71,11 @@ const Page = async ({ params }: PageProps) => {
               {session.user.username === params.username ? (
                 <EditProfileModal initialData={paramsUser} />
               ) : (
-                <FollowButton />
+                <FollowButton
+                  userId={paramsUser?.id!}
+                  data={paramsUser}
+                  sessionId={session.user.id}
+                />
               )}
             </div>
             <div>
