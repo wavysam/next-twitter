@@ -70,11 +70,7 @@ const PostItem = ({ post, session }: PostItemProps) => {
           </div>
 
           <div className="mt-4">
-            <PostActions
-              data={post}
-              sessionImage={session?.user.image!}
-              sessionId={session?.user.id!}
-            />
+            <PostActions data={post} sessionId={session?.user.id!} />
           </div>
         </div>
       </div>
