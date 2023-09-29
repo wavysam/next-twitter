@@ -14,11 +14,10 @@ type PostActionsProps = {
         comments: Comment[];
       })
     | any;
-  sessionImage: string;
   sessionId: string;
 };
 
-const PostActions = ({ data, sessionImage, sessionId }: PostActionsProps) => {
+const PostActions = ({ data, sessionId }: PostActionsProps) => {
   const pathname = usePathname();
 
   const hasLiked = !!data.likes.find((id: string) => id === sessionId);
