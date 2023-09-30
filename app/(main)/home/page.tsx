@@ -9,7 +9,6 @@ import prisma from "@/lib/prisma";
 import PostFeed from "@/components/posts/PostFeed";
 import fetchPosts from "@/actions/posts/fetchPosts";
 import Loader from "@/components/Loader";
-import { trpc } from "@/app/_trpc/client";
 
 const Page = async () => {
   const session = await getAuthSession();
