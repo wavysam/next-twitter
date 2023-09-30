@@ -5,13 +5,89 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// datasource db {
+//   provider = "mongodb"
+//   url      = env("DATABASE_URL")
+// }
+
+// model User {
+//   id           String   @id @default(auto()) @map("_id") @db.ObjectId
+//   name         String
+//   username     String   @unique
+//   email        String   @unique
+//   password     String
+//   bio          String?
+//   coverImage   String?
+//   profileImage String?
+//   followers    String[]
+//   following    String[]
+//   createdAt    DateTime @default(now())
+//   updatedAt    DateTime @updatedAt
+
+//   posts    Post[]
+//   comments Comment[]
+//   replies  Reply[]
+// }
+
+// model Post {
+//   id        String   @id @default(auto()) @map("_id") @db.ObjectId
+//   body      String
+//   images    String[]
+//   likes     String[]
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   creatorId String @db.ObjectId
+//   creator   User   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+//   comments Comment[]
+//   replies  Reply[]
+// }
+
+// model Comment {
+//   id        String   @id @default(auto()) @map("_id") @db.ObjectId
+//   body      String
+//   images    String[]
+//   likes     String[]
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   postId    String @db.ObjectId
+//   post      Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+//   creatorId String @db.ObjectId
+//   creator   User   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+//   replies Reply[]
+// }
+
+// model Reply {
+//   id         String   @id @default(auto()) @map("_id") @db.ObjectId
+//   body       String
+//   images     String[]
+//   likes      String[]
+//   createdAt  DateTime @default(now())
+//   updatedtAt DateTime @updatedAt
+
+//   commentId String  @db.ObjectId
+//   comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+//   postId    String  @db.ObjectId
+//   post      Post    @relation(fields: [postId], references: [id])
+//   creatorId String  @db.ObjectId
+//   creator   User    @relation(fields: [creatorId], references: [id])
+// }
+
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+  // If you want to use Prisma Migrate, you will need to manually create a shadow database
+  // https://neon.tech/docs/guides/prisma-migrate#configure-a-shadow-database-for-prisma-migrate
+  // make sure to append ?connect_timeout=10 to the connection string
+  // shadowDatabaseUrl = env(“SHADOW_DATABASE_URL”)
 }
 
 model User {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  id           String   @id @default(cuid())
   name         String
   username     String   @unique
   email        String   @unique
@@ -30,14 +106,14 @@ model User {
 }
 
 model Post {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(cuid())
   body      String
   images    String[]
   likes     String[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  creatorId String @db.ObjectId
+  creatorId String
   creator   User   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
 
   comments Comment[]
@@ -45,33 +121,33 @@ model Post {
 }
 
 model Comment {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(cuid())
   body      String
   images    String[]
   likes     String[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  postId    String @db.ObjectId
+  postId    String
   post      Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  creatorId String @db.ObjectId
+  creatorId String
   creator   User   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
 
   replies Reply[]
 }
 
 model Reply {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  id         String   @id @default(cuid())
   body       String
   images     String[]
   likes      String[]
   createdAt  DateTime @default(now())
   updatedtAt DateTime @updatedAt
 
-  commentId String  @db.ObjectId
+  commentId String
   comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  postId    String  @db.ObjectId
+  postId    String
   post      Post    @relation(fields: [postId], references: [id])
-  creatorId String  @db.ObjectId
+  creatorId String
   creator   User    @relation(fields: [creatorId], references: [id])
 }

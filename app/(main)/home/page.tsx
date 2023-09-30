@@ -7,18 +7,14 @@ import Avatar from "@/components/Avatar";
 import PostForm from "./_components/PostForm";
 import prisma from "@/lib/prisma";
 import PostFeed from "@/components/posts/PostFeed";
+import fetchPosts from "@/actions/posts/fetchPosts";
+import Loader from "@/components/Loader";
+import { trpc } from "@/app/_trpc/client";
 
 const Page = async () => {
   const session = await getAuthSession();
-  const posts = await prisma.post.findMany({
-    include: {
-      creator: true,
-      comments: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+
+  const posts = await fetchPosts();
 
   if (!session?.user) {
     return redirect("/");
@@ -35,7 +31,7 @@ const Page = async () => {
           </div>
         </div>
       </div>
-      <Suspense fallback={<p>Loading...</p>}>
+      <Suspense fallback={<Loader />}>
         <PostFeed data={posts} />
       </Suspense>
     </div>

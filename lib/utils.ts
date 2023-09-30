@@ -10,5 +10,5 @@ export const isBase64Image = (value: string): boolean => {
   return regex.test(value);
 };
 
-export const delay = async (ms: number) =>
+export const delay = async (ms: number): Promise<number> =>
   new Promise((resolve) => setTimeout(resolve, ms));
