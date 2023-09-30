@@ -5,7 +5,6 @@ import { getAuthSession } from "@/lib/auth";
 import Header from "@/components/Header";
 import Avatar from "@/components/Avatar";
 import PostForm from "./_components/PostForm";
-import prisma from "@/lib/prisma";
 import PostFeed from "@/components/posts/PostFeed";
 import fetchPosts from "@/actions/posts/fetchPosts";
 import Loader from "@/components/Loader";
