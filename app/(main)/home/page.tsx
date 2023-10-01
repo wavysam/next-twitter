@@ -1,6 +1,7 @@
+import { Metadata } from "next";
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 
-import { Suspense } from "react";
 import { getAuthSession } from "@/lib/auth";
 import Header from "@/components/Header";
 import Avatar from "@/components/Avatar";
@@ -8,6 +9,11 @@ import PostForm from "./_components/PostForm";
 import PostFeed from "@/components/posts/PostFeed";
 import fetchPosts from "@/actions/posts/fetchPosts";
 import Loader from "@/components/Loader";
+
+export const metadata: Metadata = {
+  title: "Home / X",
+  description: "Homepage",
+};
 
 const Page = async () => {
   const session = await getAuthSession();

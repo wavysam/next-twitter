@@ -10,11 +10,31 @@ import FollowButton from "./_components/FollowButton";
 import { getAuthSession } from "@/lib/auth";
 import PostFeed from "@/components/posts/PostFeed";
 import { Suspense } from "react";
+import { Metadata } from "next";
+
 type PageProps = {
   params: {
     username: string;
   };
+  searchParams: { [key: string]: string | string[] | undefined };
 };
+
+export async function generateMetadata({
+  params,
+  searchParams,
+}: PageProps): Promise<Metadata> {
+  const { username } = params;
+
+  const user = await prisma.user.findUnique({
+    where: {
+      username,
+    },
+  });
+
+  return {
+    title: `${user?.name} (@${user?.username})`,
+  };
+}
 
 const Page = async ({ params }: PageProps) => {
   const session = await getAuthSession();

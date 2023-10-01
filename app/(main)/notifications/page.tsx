@@ -1,7 +1,14 @@
+import { Metadata } from "next";
+
 import { getNotifications } from "@/actions/notifications/getNotification";
 import DeleteButton from "@/components/DeleteButton";
 import Header from "@/components/Header";
 import NotificationFeed from "@/components/NotificationFeed";
+
+export const metadata: Metadata = {
+  title: "Notifications / X",
+  description: "Homepage",
+};
 
 const Page = async () => {
   const notifications = await getNotifications();

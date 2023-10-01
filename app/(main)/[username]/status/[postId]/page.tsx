@@ -10,13 +10,34 @@ import ClientOnly from "@/components/ClientOnly";
 import CommentForm from "@/components/CommentForm";
 import CommentFeed from "@/components/comments/CommentFeed";
 import PostActions from "@/components/posts/PostActions";
+import { Metadata } from "next";
 
 type PageProps = {
   params: {
     username: string;
     postId: string;
   };
+  searchParams: { [key: string]: string | string[] | undefined };
 };
+
+export async function generateMetadata({
+  params,
+  searchParams,
+}: PageProps): Promise<Metadata> {
+  const { postId } = params;
+  const post = await prisma.post.findUnique({
+    where: {
+      id: postId,
+    },
+    include: {
+      creator: true,
+    },
+  });
+
+  return {
+    title: `${post?.creator.name} on X: "${post?.body}" / X`,
+  };
+}
 
 const Page = async ({ params }: PageProps) => {
   const session = await getAuthSession();
