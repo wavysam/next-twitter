@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { format } from "date-fns";
+import { format, formatDistanceStrict } from "date-fns";
 import { Session } from "next-auth";
 import { useState } from "react";
 import Link from "next/link";
@@ -34,6 +34,11 @@ const PostItem = ({ post, session }: PostItemProps) => {
     }
   };
 
+  const createdAt = formatDistanceStrict(post.createdAt, Date.now());
+  const formattedDate = format(post.createdAt, "MMM dd");
+  const date = new Date(post.createdAt).getDate();
+  const today = new Date().getDate();
+
   return (
     <div className="border-b hover:bg-neutral-100 transition">
       <div className="flex items-start space-x-3 p-6">
@@ -49,13 +54,15 @@ const PostItem = ({ post, session }: PostItemProps) => {
               </Link>
               <Link
                 href={`/${post.creator.username}`}
-                className="text-neutral-600 hover:underline"
+                className="text-neutral-600 text-[15px] hover:underline"
               >
                 @{post.creator.username}
               </Link>
 
-              <p className="text-neutral-600">
-                {format(post.createdAt, "MM/dd/YYY")}
+              <span>·</span>
+
+              <p className="text-neutral-600 text-[15px]">
+                {date > today ? formattedDate : createdAt}
               </p>
             </div>
             {post.creatorId === session?.user.id && (

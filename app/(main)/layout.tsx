@@ -1,4 +1,4 @@
-import { Poppins } from "next/font/google";
+import { Inter } from "next/font/google";
 import "../globals.css";
 
 import SideBar from "@/components/layout/Sidebar";
@@ -9,10 +9,7 @@ import { Session } from "next-auth";
 import Rightbar from "@/components/Rightbar";
 import prisma from "@/lib/prisma";
 
-const poppins = Poppins({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["latin"],
-});
+const inter = Inter({ weight: ["400", "500", "600"], subsets: ["latin"] });
 
 export const metadata = {
   title: "X",
@@ -33,7 +30,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={poppins.className}>
+      <body className={inter.className}>
         <ToastProvider />
         <QueryProvider>
           <div className="h-screen">
