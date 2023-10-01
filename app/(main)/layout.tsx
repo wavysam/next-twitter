@@ -7,6 +7,7 @@ import ToastProvider from "@/components/providers/ToastProvider";
 import { getAuthSession } from "@/lib/auth";
 import { Session } from "next-auth";
 import Rightbar from "@/components/Rightbar";
+import prisma from "@/lib/prisma";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700"],
@@ -24,6 +25,11 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session: Session | null = await getAuthSession();
+  const user = await prisma.user.findUnique({
+    where: {
+      id: session?.user.id,
+    },
+  });
 
   return (
     <html lang="en">
@@ -35,7 +41,7 @@ export default async function RootLayout({
               <div className="flex flex-row">
                 <div className="fixed top-0">
                   <div className="hidden sm:basis-1/12 sm:flex md:basis-[22%]">
-                    <SideBar session={session} />
+                    <SideBar session={session} alert={user?.hasNotication} />
                   </div>
                 </div>
                 <div className="sm:ml-[8.33%]  md:ml-[22%] basis-full lg:basis-1/2 border-x min-h-screen">

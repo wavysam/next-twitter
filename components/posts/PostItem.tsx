@@ -35,7 +35,7 @@ const PostItem = ({ post, session }: PostItemProps) => {
   };
 
   return (
-    <div className="border-b hover:bg-neutral-100 cursor-pointer transition">
+    <div className="border-b hover:bg-neutral-100 transition">
       <div className="flex items-start space-x-3 p-6">
         <Avatar src={post.creator.profileImage as string} />
         <div className="flex-1">

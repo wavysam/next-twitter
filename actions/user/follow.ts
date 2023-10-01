@@ -43,6 +43,25 @@ export async function follow(userId: string, path: string) {
       }),
     ]);
 
+    if (followingUser?.id && followingUser.id !== session?.user.id) {
+      await Promise.allSettled([
+        await prisma.notification.create({
+          data: {
+            body: "Someone followed you",
+            userId: followingUser.id,
+          },
+        }),
+        await prisma.user.update({
+          where: {
+            id: followingUser.id,
+          },
+          data: {
+            hasNotication: true,
+          },
+        }),
+      ]);
+    }
+
     revalidatePath(path);
   } catch (error) {}
 }

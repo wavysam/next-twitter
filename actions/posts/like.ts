@@ -31,6 +31,24 @@ export async function likePost({ postId, path }: LikeProps) {
       },
     });
 
+    if (post?.creatorId && post.creatorId !== session?.user.id) {
+      await prisma.notification.create({
+        data: {
+          body: "Someone like your tweet",
+          userId: post.creatorId,
+        },
+      });
+
+      await prisma.user.update({
+        where: {
+          id: post.creatorId,
+        },
+        data: {
+          hasNotication: true,
+        },
+      });
+    }
+
     revalidatePath(path);
   } catch (error) {}
 }

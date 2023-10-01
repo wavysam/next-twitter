@@ -19,9 +19,10 @@ import { signOut } from "next-auth/react";
 
 type SidebarProps = {
   session: Session | null;
+  alert?: boolean | null;
 };
 
-const SideBar = ({ session }: SidebarProps) => {
+const SideBar = ({ session, alert }: SidebarProps) => {
   return (
     <div className="relative h-full w-full">
       <div className="flex flex-col justify-between md:w-[275px] h-screen">
@@ -38,6 +39,7 @@ const SideBar = ({ session }: SidebarProps) => {
             href="/notifications"
             icon={TbBell}
             activeIcon={TbBellFilled}
+            alert={alert!}
           />
           <SidebarItem
             label="Profile"

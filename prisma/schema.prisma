@@ -11,22 +11,23 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  name         String
-  username     String   @unique
-  email        String   @unique
-  password     String
-  bio          String?
-  coverImage   String?
-  profileImage String?
-  followers    String[]
-  following    String[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  username      String   @unique
+  email         String   @unique
+  password      String
+  bio           String?
+  coverImage    String?
+  profileImage  String?
+  followers     String[]
+  following     String[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  hasNotication Boolean?
 
-  posts    Post[]
-  comments Comment[]
-  replies  Reply[]
+  posts         Post[]
+  comments      Comment[]
+  notifications Notification[]
 }
 
 model Post {
@@ -41,7 +42,6 @@ model Post {
   creator   User   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
 
   comments Comment[]
-  replies  Reply[]
 }
 
 model Comment {
@@ -56,22 +56,13 @@ model Comment {
   post      Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
   creatorId String @db.ObjectId
   creator   User   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-
-  replies Reply[]
 }
 
-model Reply {
+model Notification {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   body       String
-  images     String[]
-  likes      String[]
-  createdAt  DateTime @default(now())
-  updatedtAt DateTime @updatedAt
+  userId     String   @db.ObjectId
+  createdtAt DateTime @default(now())
 
-  commentId String  @db.ObjectId
-  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  postId    String  @db.ObjectId
-  post      Post    @relation(fields: [postId], references: [id])
-  creatorId String  @db.ObjectId
-  creator   User    @relation(fields: [creatorId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

@@ -11,7 +11,7 @@ const Avatar = ({ src, isLarge, isBordered }: AvatarProps) => {
   return (
     <div
       className={cn(
-        "relative rounded-full",
+        "relative rounded-full hover:opacity-75 transition",
         isLarge ? "h-36" : "h-11",
         isLarge ? "w-36" : "w-11",
         isBordered ? "border-4" : "border-0",

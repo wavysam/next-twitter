@@ -2,14 +2,17 @@
 
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { IconType } from "react-icons";
+import { GoDotFill } from "react-icons/go";
 
 type SidebarItemProps = {
   label: string;
   href: string;
   icon: IconType;
   activeIcon: IconType;
+  alert?: boolean | null;
 };
 
 const SidebarItem = ({
@@ -17,9 +20,18 @@ const SidebarItem = ({
   href,
   icon: Icon,
   activeIcon: ActiveIcon,
+  alert,
 }: SidebarItemProps) => {
+  const router = useRouter();
   const pathname = usePathname();
   const isActive = pathname === href;
+
+  useEffect(() => {
+    if (pathname === "/notifications") {
+      router.refresh();
+    }
+  }, [pathname, router]);
+
   return (
     <div className="relative h-full w-full">
       <div className="flex flex-col items-start space-y-2">
@@ -28,9 +40,18 @@ const SidebarItem = ({
           className="flex items-center space-x-3 justify-start p-3 hover:bg-neutral-200 rounded-full transition"
         >
           {isActive ? (
-            <ActiveIcon className="h-7 w-7" />
+            <div className="relative">
+              <ActiveIcon className="h-7 w-7" />
+            </div>
           ) : (
-            <Icon className="h-7 w-7" />
+            <div className="relative">
+              {alert ? (
+                <div className="absolute top-0 right-0">
+                  <GoDotFill className="h-4 w-4 text-sky-500" />
+                </div>
+              ) : null}
+              <Icon className="h-7 w-7" />
+            </div>
           )}
 
           <span

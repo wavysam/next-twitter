@@ -27,5 +27,9 @@ export default async function createPost({
     });
 
     revalidatePath(path);
-  } catch (error) {}
+
+    return post;
+  } catch (error) {
+    throw new Error("Failed to create post");
+  }
 }

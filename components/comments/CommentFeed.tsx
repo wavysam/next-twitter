@@ -1,13 +1,10 @@
 import dayjs from "dayjs";
-import { useMemo } from "react";
 import { Comment, User } from "@prisma/client";
 import relativeTime from "dayjs/plugin/relativeTime";
 
 import Avatar from "../Avatar";
 import FeedImages from "../FeedImages";
-import CommentActions from "./CommentActions";
 import { getAuthSession } from "@/lib/auth";
-import AlertModal from "../AlertModal";
 import DeleteCommentModal from "./DeleteCommentModal";
 
 type CommentFeedProps = {
@@ -40,9 +37,6 @@ const CommentFeed = async ({ comment }: CommentFeedProps) => {
             <p className="text-neutral-700">{comment.body}</p>
           </div>
           <FeedImages data={comment.images} />
-          <div className="mt-3">
-            <CommentActions data={comment} sessionId={session?.user.id} />
-          </div>
         </div>
       </div>
     </div>

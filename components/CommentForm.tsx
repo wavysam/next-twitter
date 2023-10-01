@@ -3,10 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Image as ImageIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
-import { toast } from "react-hot-toast";
+import { usePathname } from "next/navigation";
 
 import { Form, FormField, FormItem, FormControl } from "./ui/form";
 import TextareaAutosize from "react-textarea-autosize";
@@ -16,12 +13,13 @@ import {
   CommentValidatorType,
 } from "@/lib/validator/commentValidator";
 import { Loader2 } from "lucide-react";
-import { Dispatch, SetStateAction, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import ImagePreview from "./ImagePreview";
 import { useUploadThing } from "@/lib/uploadthing";
+import createComment from "@/actions/comments/createComment";
 
 type CommentFormProps = {
   postId: string;
@@ -33,7 +31,7 @@ const CommentForm = ({ postId }: CommentFormProps) => {
   const [imagesPreview, setImagesPreview] = useState<string[]>([]);
 
   const { startUpload } = useUploadThing("imageUploader");
-  const router = useRouter();
+  const pathname = usePathname();
 
   const form = useForm<CommentValidatorType>({
     resolver: zodResolver(CommentValidatorSchema),
@@ -75,51 +73,10 @@ const CommentForm = ({ postId }: CommentFormProps) => {
     }
   };
 
-  const { mutate: createComment, isLoading } = useMutation({
-    mutationFn: async ({
-      body,
-      images,
-      postId,
-    }: {
-      body: string;
-      images: string[];
-      postId: string;
-    }) => {
-      const payload = {
-        body,
-        images,
-        postId,
-      };
-      const { data } = await axios.post("/api/comment", payload);
-      return data;
-    },
-    onError: (error) => {
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 401) {
-          return toast.error(error.response.data);
-        }
-        if (error.response?.status === 404) {
-          return toast.error(error.response.data);
-        }
-        if (error.response?.status === 409) {
-          return toast.error(error.response.data);
-        }
-      }
-      return toast.error("Something went wrong");
-    },
-    onSuccess: () => {
-      router.refresh();
-      toast.success("Comment added");
-      reset();
-      setImagesPreview([]);
-      setImages([]);
-    },
-  });
-
   const onSubmit = async (values: CommentValidatorType) => {
     let imagesUrl: string[] = [];
 
-    if (images && images.length > 0) {
+    if (imagesPreview && imagesPreview.length > 0) {
       const imageUploadResponse = await startUpload(images);
 
       if (imageUploadResponse) {
@@ -127,11 +84,16 @@ const CommentForm = ({ postId }: CommentFormProps) => {
       }
     }
 
-    createComment({
+    await createComment({
       body: values.body,
       images: imagesUrl,
       postId,
+      path: pathname,
     });
+
+    reset();
+    setImagesPreview([]);
+    setImages([]);
   };
 
   const inputRef = useRef(null);
@@ -150,7 +112,7 @@ const CommentForm = ({ postId }: CommentFormProps) => {
                     {...field}
                     ref={inputRef}
                     rows={1}
-                    disabled={isLoading || isSubmitting}
+                    disabled={isSubmitting}
                     onFocus={() => setIsFocused(true)}
                     placeholder="Post your reply"
                     className="w-full resize-none bg-white focus:outline-none placeholder:text-xl text-lg"
@@ -165,13 +127,13 @@ const CommentForm = ({ postId }: CommentFormProps) => {
           />
 
           <Button
-            disabled={isLoading || !isValid}
+            disabled={!isValid || isSubmitting}
             className={cn(
               "rounded-full w-[100px]",
               isFocused ? "hidden" : "block"
             )}
           >
-            {isLoading || isSubmitting ? (
+            {isSubmitting ? (
               <Loader2 className="h-5 w-5 animate-spin" />
             ) : (
               "Reply"
@@ -191,16 +153,16 @@ const CommentForm = ({ postId }: CommentFormProps) => {
                 type="file"
                 multiple
                 id="images"
-                disabled={isLoading || isSubmitting}
+                disabled={isSubmitting}
                 className="hidden"
                 onChange={handleImageChange}
               />
             </div>
             <Button
-              disabled={isLoading || !isValid || isSubmitting}
+              disabled={!isValid || isSubmitting}
               className="rounded-full w-[100px]"
             >
-              {isLoading || isSubmitting ? (
+              {isSubmitting ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
               ) : (
                 "Reply"
