@@ -1,13 +1,15 @@
+"use client";
+
 import { ExtendedPost } from "@/lib/types";
 import PostItem from "./PostItem";
-import { getAuthSession } from "@/lib/auth";
+import { Session } from "next-auth";
 
 type PostFeedProps = {
   data: ExtendedPost[] | undefined;
+  session: Session | null;
 };
 
-const PostFeed = async ({ data }: PostFeedProps) => {
-  const session = await getAuthSession();
+const PostFeed = ({ data, session }: PostFeedProps) => {
   return (
     <>
       {data?.map((post) => (

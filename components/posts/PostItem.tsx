@@ -15,7 +15,7 @@ import { ExtendedPost } from "@/lib/types";
 
 type PostItemProps = {
   post: ExtendedPost;
-  session: Session | null;
+  session?: Session | null;
 };
 
 const PostItem = ({ post, session }: PostItemProps) => {

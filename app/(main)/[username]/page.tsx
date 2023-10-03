@@ -1,16 +1,18 @@
 import Image from "next/image";
+import { Metadata } from "next";
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 
-import Avatar from "@/components/Avatar";
-import Header from "@/components/Header";
 import prisma from "@/lib/prisma";
-import EditProfileModal from "./_components/EditProfileModal";
-import ProfileInfo from "./_components/ProfileInfo";
-import FollowButton from "./_components/FollowButton";
+import Header from "@/components/Header";
+import Avatar from "@/components/Avatar";
+import Loader from "@/components/Loader";
 import { getAuthSession } from "@/lib/auth";
 import PostFeed from "@/components/posts/PostFeed";
-import { Suspense } from "react";
-import { Metadata } from "next";
+import ProfileInfo from "./_components/ProfileInfo";
+import FollowButton from "./_components/FollowButton";
+import InfiniteScroll from "@/components/InfiniteScroll";
+import EditProfileModal from "./_components/EditProfileModal";
 
 type PageProps = {
   params: {
@@ -111,9 +113,10 @@ const Page = async ({ params }: PageProps) => {
           </div>
         </div>
 
-        <Suspense fallback={<p>Loading...</p>}>
-          <PostFeed data={userPosts} />
+        <Suspense fallback={<Loader />}>
+          <PostFeed data={userPosts} session={session} />
         </Suspense>
+        <InfiniteScroll userId={paramsUser?.id} session={session} />
       </div>
     </div>
   );

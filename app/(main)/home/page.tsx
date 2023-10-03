@@ -7,8 +7,9 @@ import Header from "@/components/Header";
 import Avatar from "@/components/Avatar";
 import PostForm from "./_components/PostForm";
 import PostFeed from "@/components/posts/PostFeed";
-import fetchPosts from "@/actions/posts/fetchPosts";
 import Loader from "@/components/Loader";
+import fetchPosts from "@/actions/posts/fetchPosts";
+import InfiniteScroll from "@/components/InfiniteScroll";
 
 export const metadata: Metadata = {
   title: "Home / X",
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
 const Page = async () => {
   const session = await getAuthSession();
 
-  const posts = await fetchPosts();
+  const posts = await fetchPosts({});
 
   if (!session?.user) {
     return redirect("/");
@@ -36,8 +37,9 @@ const Page = async () => {
         </div>
       </div>
       <Suspense fallback={<Loader />}>
-        <PostFeed data={posts} />
+        <PostFeed data={posts} session={session} />
       </Suspense>
+      <InfiniteScroll session={session} />
     </div>
   );
 };

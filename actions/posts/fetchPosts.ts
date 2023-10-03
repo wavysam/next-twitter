@@ -1,13 +1,22 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { ExtendedPost } from "@/lib/types";
 
-export default async function fetchPosts(userId?: string) {
+type FetchPostsProps = {
+  page?: number;
+  userId?: string;
+};
+
+export default async function fetchPosts({
+  page = 1,
+  userId,
+}: FetchPostsProps) {
   try {
-    // await delay(3000);
+    const limit = 10;
+    const skip = (page - 1) * limit;
     let posts;
-    if (userId && userId !== undefined) {
+
+    if (userId) {
       posts = await prisma.post.findMany({
         where: {
           creatorId: userId,
@@ -16,6 +25,8 @@ export default async function fetchPosts(userId?: string) {
           creator: true,
           comments: true,
         },
+        take: limit,
+        skip,
         orderBy: {
           createdAt: "desc",
         },
@@ -26,12 +37,16 @@ export default async function fetchPosts(userId?: string) {
           creator: true,
           comments: true,
         },
+        take: limit,
+        skip,
         orderBy: {
           createdAt: "desc",
         },
       });
     }
 
-    return posts as ExtendedPost[];
-  } catch (error) {}
+    return posts;
+  } catch (error: any) {
+    throw new Error("Failed to fetch posts", error.message);
+  }
 }
