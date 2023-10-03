@@ -11,7 +11,6 @@ import { getAuthSession } from "@/lib/auth";
 import PostFeed from "@/components/posts/PostFeed";
 import ProfileInfo from "./_components/ProfileInfo";
 import FollowButton from "./_components/FollowButton";
-import InfiniteScroll from "@/components/InfiniteScroll";
 import EditProfileModal from "./_components/EditProfileModal";
 
 type PageProps = {
@@ -116,7 +115,6 @@ const Page = async ({ params }: PageProps) => {
         <Suspense fallback={<Loader />}>
           <PostFeed data={userPosts} session={session} />
         </Suspense>
-        <InfiniteScroll userId={paramsUser?.id} session={session} />
       </div>
     </div>
   );

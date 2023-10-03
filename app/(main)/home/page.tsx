@@ -9,7 +9,7 @@ import PostForm from "./_components/PostForm";
 import PostFeed from "@/components/posts/PostFeed";
 import Loader from "@/components/Loader";
 import fetchPosts from "@/actions/posts/fetchPosts";
-import InfiniteScroll from "@/components/InfiniteScroll";
+import prisma from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "Home / X",
@@ -19,7 +19,15 @@ export const metadata: Metadata = {
 const Page = async () => {
   const session = await getAuthSession();
 
-  const posts = await fetchPosts({});
+  const posts = await prisma.post.findMany({
+    include: {
+      creator: true,
+      comments: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 
   if (!session?.user) {
     return redirect("/");
@@ -39,7 +47,6 @@ const Page = async () => {
       <Suspense fallback={<Loader />}>
         <PostFeed data={posts} session={session} />
       </Suspense>
-      <InfiniteScroll session={session} />
     </div>
   );
 };
