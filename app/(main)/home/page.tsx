@@ -8,7 +8,6 @@ import Avatar from "@/components/Avatar";
 import PostForm from "./_components/PostForm";
 import PostFeed from "@/components/posts/PostFeed";
 import Loader from "@/components/Loader";
-import fetchPosts from "@/actions/posts/fetchPosts";
 import prisma from "@/lib/prisma";
 
 export const metadata: Metadata = {
